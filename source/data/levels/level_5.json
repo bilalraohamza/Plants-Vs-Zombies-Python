@@ -1,0 +1,22 @@
+{
+    "background_type": 2,
+    "init_sun_value": 50,
+    "zombie_list": [
+        {"time": 6000, "name": "ConeheadZombie", "map_y": 1},
+        {"time": 12000, "name": "BucketheadZombie", "map_y": 3},
+        {"time": 18000, "name": "NewspaperZombie", "map_y": 0},
+        {"time": 24000, "name": "FlagZombie", "map_y": 2},
+        {"time": 26000, "name": "BucketheadZombie", "map_y": 4},
+        {"time": 34000, "name": "ConeheadZombie", "map_y": 1},
+        {"time": 40000, "name": "BucketheadZombie", "map_y": 3},
+        {"time": 46000, "name": "NewspaperZombie", "map_y": 0},
+        {"time": 50000, "name": "FlagZombie", "map_y": 2},
+        {"time": 52000, "name": "BucketheadZombie", "map_y": 4}
+    ],
+    "wave_data": [
+    {"wave_number": 1, "warning_text": "Wave 1 incoming!", "is_huge_wave": false, "trigger_time": 0},
+    {"wave_number": 2, "warning_text": "Wave 2 incoming!", "is_huge_wave": false, "trigger_time": 18000},
+    {"wave_number": 3, "warning_text": "Wave 3 incoming!", "is_huge_wave": false, "trigger_time": 33000},
+    {"wave_number": 4, "warning_text": "A huge wave of zombies is approaching!", "is_huge_wave": true, "trigger_time": 44000}
+]
+}
