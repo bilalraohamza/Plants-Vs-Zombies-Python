@@ -1,7 +1,3 @@
-This is the perfect time to write a description! Since you are pushing this to GitHub, this text is exactly what you should put in your README.md file. It will be the first thing people see when they visit your repository.
-
-Here is a professional, engaging description that highlights all the amazing features and clean architecture you just built:
-
 🌱🧟 Plants vs. Zombies: Python Edition
 A fully playable, modular clone of the classic game Plants vs. Zombies, built entirely in Python using the Pygame library.
 
