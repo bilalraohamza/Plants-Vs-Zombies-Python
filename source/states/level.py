@@ -6,6 +6,7 @@ import pygame as pg
 from ..core import constants as c
 from ..core import engine
 from ..components import map, menu_bar, plant, zombie
+from ..states.hint_system import HintSystem, _load_tutorial_seen
 
 class WaveText:
     def __init__(self):
@@ -213,6 +214,13 @@ class Level(engine.State):
         self.menu_button = InGameMenuButton()
         self.pause_menu = PauseMenuOverlay()
 
+        # Hint system: only for Level 1, and only if the player hasn't seen it before
+        current_user = self.game_info.get(c.CURRENT_USER, None)
+        if self.game_info.get(c.LEVEL_NUM, 1) == 1 and not _load_tutorial_seen(current_user):
+            self.hint_system = HintSystem(self)
+        else:
+            self.hint_system = None
+
     def load_map(self):
         map_file = 'level_' + str(self.game_info[c.LEVEL_NUM]) + '.json'
         file_path = os.path.join(c.LEVELS_DIR, map_file)
@@ -353,6 +361,9 @@ class Level(engine.State):
             if self.panel.check_start_button_click(mouse_pos):
                 self.init_play(self.panel.get_selected_cards())
 
+        if self.hint_system:
+            self.hint_system.update(self.current_time, mouse_pos, mouse_click)
+
     def init_play(self, card_list):
         self.state = c.PLAY
 
@@ -456,6 +467,9 @@ class Level(engine.State):
         self.check_plants()
         self.check_car_collisions()
         self.check_game_state()
+
+        if self.hint_system:
+            self.hint_system.update(self.current_time, mouse_pos, mouse_click)
 
     def create_zombie(self, name, map_y):
         x, y = self.map.get_map_grid_pos(0, map_y)
@@ -851,3 +865,5 @@ class Level(engine.State):
 
         if is_paused:
             self.pause_menu.draw(surface)
+        elif self.hint_system and not is_paused:
+            self.hint_system.draw(surface, self.current_time)
