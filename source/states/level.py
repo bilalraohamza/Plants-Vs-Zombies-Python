@@ -612,6 +612,9 @@ class Level(engine.State):
                     zombie = pg.sprite.spritecollideany(bullet, self.zombie_groups[i], collided_func)
                     if zombie and zombie.state != c.DIE:
                         zombie.set_damage(bullet.damage, bullet.ice)
+                        # Count kill if this bullet was lethal
+                        if zombie.health <= 0:
+                            self.zombies_killed += 1
                         bullet.set_explode()
 
     def check_zombie_collisions(self):
@@ -814,6 +817,9 @@ class Level(engine.State):
             self.next = c.GAME_VICTORY
             self.done = True
         elif self.check_lose():
+            self.persist[c.ZOMBIES_KILLED] = self.zombies_killed
+            self.persist[c.SUN_COLLECTED]  = self.sun_collected
+            self.persist[c.PLANTS_PLANTED] = self.plants_planted
             self.next = c.GAME_LOSE
             self.done = True
 

@@ -1,48 +1,18 @@
 {
     "profiles": [
         {
-            "name": "rao",
-            "level": 2
-        },
-        {
-            "name": "Raoh",
-            "level": 1
-        },
-        {
-            "name": "fffff",
-            "level": 1
-        },
-        {
-            "name": "raohhh",
-            "level": 1,
+            "name": "rtrtry",
+            "level": 2,
             "tutorial_seen": true
         },
         {
-            "name": "yyyyy",
-            "level": 1,
-            "tutorial_seen": true
-        },
-        {
-            "name": "dgadfgadsg",
-            "level": 1,
-            "tutorial_seen": true
-        },
-        {
-            "name": "rgerwgg",
-            "level": 1,
-            "tutorial_seen": true
-        },
-        {
-            "name": "reyry",
+            "name": "wreuwey",
             "level": 1
         },
         {
-            "name": "sdgaga",
-            "level": 1
-        },
-        {
-            "name": "123ear",
-            "level": 1
+            "name": "qweqw",
+            "level": 1,
+            "tutorial_seen": true
         }
     ]
 }
