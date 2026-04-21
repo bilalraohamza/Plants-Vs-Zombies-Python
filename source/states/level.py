@@ -808,14 +808,33 @@ class Level(engine.State):
             self.persist[c.SUN_COLLECTED]  = self.sun_collected
             self.persist[c.PLANTS_PLANTED] = self.plants_planted
 
-            # --- SAVE PROGRESS ---
+            # Calculate score
+            score = (self.zombies_killed * 100 +
+                     self.sun_collected  * 2   +
+                     self.plants_planted * 10)
+            self.persist[c.LEVEL_SCORE] = score
+
+            # Save score and check for beaten users
+            from ..states.user_select import save_level_score, check_beaten_users
+            completed_level = self.game_info[c.LEVEL_NUM] - 1
+            username        = self.persist.get(c.CURRENT_USER, None)
+            if username:
+                is_best = save_level_score(username, completed_level, score)
+                beaten  = check_beaten_users(username, completed_level, score)
+            else:
+                is_best = False
+                beaten  = []
+            self.persist[c.LEVEL_SCORE_IS_BEST] = is_best
+            self.persist[c.BEATEN_USERS]        = beaten
+
+            # Save level progress
             from ..states.user_select import update_profile_level
-            current_user = self.persist.get(c.CURRENT_USER, None)
-            if current_user:
-                update_profile_level(current_user, self.game_info[c.LEVEL_NUM])
+            if username:
+                update_profile_level(username, self.game_info[c.LEVEL_NUM])
 
             self.next = c.GAME_VICTORY
             self.done = True
+
         elif self.check_lose():
             self.persist[c.ZOMBIES_KILLED] = self.zombies_killed
             self.persist[c.SUN_COLLECTED]  = self.sun_collected

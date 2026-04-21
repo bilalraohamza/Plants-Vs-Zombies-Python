@@ -10,7 +10,7 @@ class Menu(engine.State):
         engine.State.__init__(self)
     
     def startup(self, current_time, persist):
-        self.next = c.LEVEL
+        self.next = c.LEVEL_SELECT
         self.persist = persist
         self.game_info = persist
         
@@ -171,4 +171,3 @@ class Menu(engine.State):
             self.active_click = None
             for data in self.buttons.values():
                 data["clicked"] = False
-

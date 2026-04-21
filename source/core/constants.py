@@ -33,12 +33,21 @@ CURRENT_TIME = 'current time'
 LEVEL_NUM = 'level num'
 
 #STATES FOR ENTIRE GAME
-MAIN_MENU = 'main menu'
-LOAD_SCREEN = 'load screen'
-PAUSE_MENU = 'pause menu'
-GAME_LOSE = 'game los'
+MAIN_MENU    = 'main menu'
+LOAD_SCREEN  = 'load screen'
+PAUSE_MENU   = 'pause menu'
+GAME_LOSE    = 'game los'
 GAME_VICTORY = 'game victory'
-LEVEL = 'level'
+LEVEL        = 'level'
+LEVEL_SELECT = 'level_select'
+LEADERBOARD  = 'leaderboard'
+
+MAX_LEVEL = 9   # levels 1-9 exist in the levels directory
+
+# Score / leaderboard persist keys
+LEVEL_SCORE        = 'level_score'
+LEVEL_SCORE_IS_BEST = 'level_score_is_best'
+BEATEN_USERS       = 'beaten_users'
 
 MAIN_MENU_IMAGE = 'MainMenu'
 

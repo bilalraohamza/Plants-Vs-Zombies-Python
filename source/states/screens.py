@@ -70,147 +70,146 @@ class Screen(engine.State):
 # --- VICTORY SCREEN ---
 # ==========================================
 class GameVictoryScreen(Screen):
-    # --- Button layout inside the parchment ---
-    _BTN_W      = 148
-    _BTN_H      = 38
-    _BTN_GAP    = 16
-    _BTN_Y_OFF  = 400   # offset from rect.y
+    _BTN_W   = 118
+    _BTN_H   = 36
+    _BTN_GAP = 10
 
-    # (label, next_state_or_action, bg_normal, bg_hover, text_color)
     _BTN_DEFS = [
-        ("Exit",       "exit",       (130, 35,  35),  (175, 55,  55),  (255, 255, 255)),
-        ("Main Menu",  c.MAIN_MENU,  ( 90, 60,  15),  (130, 90,  25),  (255, 220, 100)),
-        ("Next Level", c.LEVEL,      ( 30, 110, 30),  ( 50, 155, 50),  (255, 255, 255)),
+        ("Exit",         "exit",         (130, 35,  35),  (175, 55,  55),  (255, 255, 255)),
+        ("Level Select", c.LEVEL_SELECT, ( 40,  60, 130),  ( 60,  90, 180),  (255, 255, 255)),
+        ("Main Menu",    c.MAIN_MENU,    ( 90,  60,  15),  (130,  90,  25),  (255, 220, 100)),
+        ("Next Level",   c.LEVEL,        ( 30, 110,  30),  ( 50, 155,  50),  (255, 255, 255)),
     ]
-    _BTN_BORDER = (180, 140, 50)   # golden border matches the wooden board
+    _BTN_BORDER = (180, 140, 50)
 
     def __init__(self):
         Screen.__init__(self)
-        self.end_time  = 999999
-        self._hover    = -1        # index of hovered button, -1 = none
-        self._buttons  = []        # pg.Rect list, built in setup_image
+        self.end_time = 999999
+        self._hover   = -1
+        self._buttons = []
 
-    def get_image_name(self):
-        return c.GAME_VICTORY_IMAGE
-
-    def set_next_state(self):
-        return c.LEVEL
-
-    def get_background_color(self):
-        return c.GAME_VICTORY_BACKGROUND_COLOR
+    def get_image_name(self):    return c.GAME_VICTORY_IMAGE
+    def set_next_state(self):    return c.LEVEL
+    def get_background_color(self): return c.GAME_VICTORY_BACKGROUND_COLOR
 
     def setup_background(self):
         self.setup_blurred_background(
-            c.VICTORY_BACKGROUND,
-            c.GAME_VICTORY_BLUR_SCALE,
-            c.GAME_VICTORY_DIM_ALPHA,
-        )
+            c.VICTORY_BACKGROUND, c.GAME_VICTORY_BLUR_SCALE, c.GAME_VICTORY_DIM_ALPHA)
 
     def setup_image(self, name):
-        raw_image = engine.GFX[name].convert_alpha()
-        self.image = pg.transform.smoothscale(raw_image,
-                         (c.GAME_VICTORY_WIDTH, c.GAME_VICTORY_HEIGHT))
+        raw  = engine.GFX[name].convert_alpha()
+        self.image = pg.transform.smoothscale(raw, (c.GAME_VICTORY_WIDTH, c.GAME_VICTORY_HEIGHT))
         self.image.set_colorkey(c.BLACK)
-        self.rect = self.image.get_rect(topleft=(c.GAME_VICTORY_X, c.GAME_VICTORY_Y))
-        self.setup_stats_text()
-        self._build_buttons()
+        self.rect  = self.image.get_rect(topleft=(c.GAME_VICTORY_X, c.GAME_VICTORY_Y))
+        self._setup_content()
 
-    def setup_stats_text(self):
+    def _setup_content(self):
         pg.font.init()
         try:
-            self.font_large = pg.font.Font(c.STATS_FONT_PATH, 32)
-            self.font_small = pg.font.Font(c.STATS_FONT_PATH, 22)
+            self.font_lg  = pg.font.Font(c.STATS_FONT_PATH, 30)
+            self.font_md  = pg.font.Font(c.STATS_FONT_PATH, 22)
+            self.font_sm  = pg.font.Font(c.STATS_FONT_PATH, 17)
+            self.font_btn = pg.font.Font(c.STATS_FONT_PATH, 19)
         except (IOError, AttributeError):
-            self.font_large = pg.font.SysFont("arial", 32, bold=True)
-            self.font_small = pg.font.SysFont("arial", 22, bold=True)
+            self.font_lg  = pg.font.SysFont("arial", 30, bold=True)
+            self.font_md  = pg.font.SysFont("arial", 22, bold=True)
+            self.font_sm  = pg.font.SysFont("arial", 17, bold=True)
+            self.font_btn = pg.font.SysFont("arial", 19, bold=True)
 
-        zombies = self.persist.get(c.ZOMBIES_KILLED, 0)
-        sun     = self.persist.get(c.SUN_COLLECTED,  0)
-        plants  = self.persist.get(c.PLANTS_PLANTED, 0)
+        zombies  = self.persist.get(c.ZOMBIES_KILLED, 0)
+        sun      = self.persist.get(c.SUN_COLLECTED,  0)
+        plants   = self.persist.get(c.PLANTS_PLANTED, 0)
+        score    = self.persist.get(c.LEVEL_SCORE, 0)
+        is_best  = self.persist.get(c.LEVEL_SCORE_IS_BEST, False)
+        beaten   = self.persist.get(c.BEATEN_USERS, [])
+
+        score_label = f"Score:  {score}"
+        if is_best:
+            score_label += "   * NEW BEST!"
 
         self.stat_lines = [
-            (self.font_large, f"Zombies Defeated:  {zombies}", (255, 200,  50), (60, 30, 0)),
-            (self.font_small, f"Plants Planted:       {plants}", ( 80, 200,  80), (60, 30, 0)),
-            (self.font_small, f"Sun Collected:        {sun}",    (255, 140,   0), (60, 30, 0)),
+            (self.font_lg, f"Zombies Defeated:  {zombies}", (255, 200,  50), (60, 30, 0)),
+            (self.font_md, f"Plants Planted:       {plants}", ( 80, 200,  80), (60, 30, 0)),
+            (self.font_md, f"Sun Collected:        {sun}",    (255, 140,   0), (60, 30, 0)),
+            (self.font_md, score_label, (255, 255, 80) if is_best else (180, 220, 255), (30, 30, 60)),
         ]
 
-    def _build_buttons(self):
-        """Compute the three button rects so they sit parallel inside the board."""
-        n        = len(self._BTN_DEFS)
-        total_w  = n * self._BTN_W + (n - 1) * self._BTN_GAP
-        start_x  = c.SCREEN_WIDTH // 2 - total_w // 2
-        btn_y    = self.rect.y + self._BTN_Y_OFF
+        # Beat notification lines
+        self.beat_lines = []
+        if beaten:
+            names = ", ".join(beaten[:3])   # show max 3 names
+            self.beat_lines.append(
+                (self.font_sm, f"You beat:  {names}!", (100, 255, 130), (0, 50, 0))
+            )
 
-        self._buttons = []
-        for i in range(n):
-            bx = start_x + i * (self._BTN_W + self._BTN_GAP)
-            self._buttons.append(pg.Rect(bx, btn_y, self._BTN_W, self._BTN_H))
+        self._build_buttons()
+
+    def _build_buttons(self):
+        n       = len(self._BTN_DEFS)
+        total_w = n * self._BTN_W + (n - 1) * self._BTN_GAP
+        start_x = c.SCREEN_WIDTH // 2 - total_w // 2 -15
+        # Push buttons lower if there is a beat notification line
+        y_off = 440 if self.beat_lines else 400
+        btn_y   = self.rect.y + y_off
+        self._buttons = [
+            pg.Rect(start_x + i * (self._BTN_W + self._BTN_GAP), btn_y,
+                    self._BTN_W, self._BTN_H)
+            for i in range(n)
+        ]
 
     def update(self, surface, current_time, mouse_pos, mouse_click):
-        # Background
         if self.background_image:
             surface.blit(self.background_image, (0, 0))
         else:
             surface.fill(self.get_background_color())
-
-        # Victory board
         surface.blit(self.image, self.rect)
 
-        # Update hover state
-        real_pos   = pg.mouse.get_pos()
+        real_pos    = pg.mouse.get_pos()
         self._hover = -1
-        for i, rect in enumerate(self._buttons):
-            if rect.collidepoint(real_pos):
+        for i, r in enumerate(self._buttons):
+            if r.collidepoint(real_pos):
                 self._hover = i
                 break
 
-        # Handle button click
         if mouse_click and mouse_click[0] and self._hover >= 0:
             _, action, *_ = self._BTN_DEFS[self._hover]
             if action == "exit":
-                import sys
-                pg.quit()
-                sys.exit()
+                import sys; pg.quit(); sys.exit()
             else:
                 self.next = action
                 self.done = True
 
-        # Draw everything
-        self.draw_stats(surface)
-        self.draw_buttons(surface)
+        self._draw_stats(surface)
+        self._draw_buttons(surface)
 
-    def draw_stats(self, surface):
-        start_y  = self.rect.y + 255
-        line_gap = 46
-        for i, (font, text, color, shadow_color) in enumerate(self.stat_lines):
-            rendered = font.render(text, True, color)
-            shadow   = font.render(text, True, shadow_color)
-            rx = c.SCREEN_WIDTH // 2 - rendered.get_width() // 2
-            ry = start_y + i * line_gap
-            surface.blit(shadow,   (rx + 2, ry + 2))
-            surface.blit(rendered, (rx,     ry))
+    def _draw_stats(self, surface):
+        y = self.rect.y + 248
+        for font, text, color, shadow in self.stat_lines:
+            r  = font.render(text, True, color)
+            sh = font.render(text, True, shadow)
+            rx = c.SCREEN_WIDTH // 2 - r.get_width() // 2
+            surface.blit(sh, (rx + 2, y + 2))
+            surface.blit(r,  (rx,     y))
+            y += font.get_linesize() + 10
 
-    def draw_buttons(self, surface):
-        try:
-            btn_font = pg.font.Font(c.STATS_FONT_PATH, 20)
-        except (IOError, AttributeError):
-            btn_font = pg.font.SysFont("arial", 20, bold=True)
+        for font, text, color, shadow in self.beat_lines:
+            r  = font.render(text, True, color)
+            sh = font.render(text, True, shadow)
+            rx = c.SCREEN_WIDTH // 2 - r.get_width() // 2
+            surface.blit(sh, (rx + 2, y + 2))
+            surface.blit(r,  (rx,     y))
+            y += font.get_linesize() + 6
 
-        for i, (rect, (label, _, bg_n, bg_h, txt_col)) in enumerate(
+    def _draw_buttons(self, surface):
+        for i, (rect, (label, _, bg_n, bg_h, txt)) in enumerate(
                 zip(self._buttons, self._BTN_DEFS)):
-
             bg = bg_h if i == self._hover else bg_n
-
-            # Filled background
-            pg.draw.rect(surface, bg,             rect, border_radius=8)
-            # Golden border
-            pg.draw.rect(surface, self._BTN_BORDER, rect, 2, border_radius=8)
-
-            # Label centred inside button
-            lbl  = btn_font.render(label, True, txt_col)
-            shad = btn_font.render(label, True, (0, 0, 0))
-            lx   = rect.centerx - lbl.get_width()  // 2
-            ly   = rect.centery - lbl.get_height() // 2
+            pg.draw.rect(surface, bg,              rect, border_radius=7)
+            pg.draw.rect(surface, self._BTN_BORDER, rect, 2, border_radius=7)
+            lbl  = self.font_btn.render(label, True, txt)
+            shad = self.font_btn.render(label, True, (0, 0, 0))
+            lx = rect.centerx - lbl.get_width()  // 2
+            ly = rect.centery - lbl.get_height() // 2
             surface.blit(shad, (lx + 1, ly + 1))
             surface.blit(lbl,  (lx,     ly))
 

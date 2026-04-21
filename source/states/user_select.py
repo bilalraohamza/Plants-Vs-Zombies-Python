@@ -53,6 +53,63 @@ def update_profile_level(name, level):
             return
 
 
+def save_level_score(username, level_num, score):
+    """Save score if new personal best. Returns True if it is a new best."""
+    if not username:
+        return False
+    profiles = load_profiles()
+    for p in profiles:
+        if p['name'].lower() == username.lower():
+            if 'scores' not in p:
+                p['scores'] = {}
+            key     = str(level_num)
+            is_best = score > p['scores'].get(key, 0)
+            if is_best:
+                p['scores'][key] = score
+                save_profiles(profiles)
+            return is_best
+    return False
+
+
+def check_beaten_users(username, level_num, score):
+    """Return list of other users whose best score on this level was beaten."""
+    if not username or score <= 0:
+        return []
+    profiles = load_profiles()
+    beaten   = []
+    for p in profiles:
+        if p['name'].lower() == username.lower():
+            continue
+        other = p.get('scores', {}).get(str(level_num), 0)
+        if other > 0 and score > other:
+            beaten.append(p['name'])
+    return beaten
+
+
+def get_user_scores(username):
+    """Return {level_str: score} for a given user."""
+    profiles = load_profiles()
+    for p in profiles:
+        if p['name'].lower() == username.lower():
+            return p.get('scores', {})
+    return {}
+
+
+def get_leaderboard():
+    """Return sorted list of dicts: name, total_score, levels_done."""
+    profiles = load_profiles()
+    board    = []
+    for p in profiles:
+        scores = p.get('scores', {})
+        board.append({
+            'name':        p['name'],
+            'total_score': sum(scores.values()),
+            'levels_done': len(scores),
+        })
+    board.sort(key=lambda x: x['total_score'], reverse=True)
+    return board
+
+
 # -----------------------------------------
 #  UI helpers
 # -----------------------------------------

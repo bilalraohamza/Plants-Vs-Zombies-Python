@@ -2,8 +2,11 @@
     "profiles": [
         {
             "name": "rtrtry",
-            "level": 2,
-            "tutorial_seen": true
+            "level": 3,
+            "tutorial_seen": true,
+            "scores": {
+                "2": 1020
+            }
         },
         {
             "name": "wreuwey",
