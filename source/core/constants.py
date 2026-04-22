@@ -41,6 +41,7 @@ GAME_VICTORY = 'game victory'
 LEVEL        = 'level'
 LEVEL_SELECT = 'level_select'
 LEADERBOARD  = 'leaderboard'
+SETTINGS     = 'settings'
 
 MAX_LEVEL = 9   # levels 1-9 exist in the levels directory
 
@@ -249,3 +250,7 @@ STATS_FONT_PATH = os.path.join(FONTS_DIR, 'Fredoka-Bold.ttf')
 USER_SELECT  = 'user_select'
 CURRENT_USER = 'current_user'
 SAVE_DATA_PATH = os.path.join(DATA_DIR, 'save_data.json')
+
+# SHOVEL TOOL
+SHOVEL      = 'Shovel'
+SHOVEL_BANK = 'ShovelBank'

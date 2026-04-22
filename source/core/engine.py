@@ -84,6 +84,15 @@ class Control():
         while not self.done:
             self.event_loop()
             self.update()
+            # FPS counter (toggled via Settings)
+            if self.state_dict and self.game_info.get('show_fps', False):
+                try:
+                    fps_font = pg.font.SysFont('arial', 16)
+                    fps_surf = fps_font.render(
+                        f'FPS: {int(self.clock.get_fps())}', True, (255, 255, 0))
+                    self.screen.blit(fps_surf, (4, 4))
+                except Exception:
+                    pass
             pg.display.update()
             self.clock.tick(self.fps)
         print('game over')
@@ -183,4 +192,3 @@ SCREEN = pg.display.set_mode(c.SCREEN_SIZE)
 GFX = load_all_gfx(c.GRAPHICS_DIR)
 ZOMBIE_RECT = load_zombie_image_rect()
 PLANT_RECT = load_plant_image_rect()
-

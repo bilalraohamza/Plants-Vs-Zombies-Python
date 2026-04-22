@@ -1,21 +1,12 @@
 {
     "profiles": [
         {
-            "name": "rtrtry",
-            "level": 3,
-            "tutorial_seen": true,
-            "scores": {
-                "2": 1020
-            }
-        },
-        {
-            "name": "wreuwey",
+            "name": "Rao",
             "level": 1
         },
         {
-            "name": "qweqw",
-            "level": 1,
-            "tutorial_seen": true
+            "name": "Rao.12",
+            "level": 1
         }
     ]
 }

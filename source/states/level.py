@@ -379,6 +379,7 @@ class Level(engine.State):
         self.drag_plant = False
         self.hint_image = None
         self.hint_plant = False
+        self.shovel     = menu_bar.ShovelTool()
         if self.background_type == c.BACKGROUND_DAY and self.bar_type == c.CHOOSEBAR_STATIC:
             self.produce_sun = True
         else:
@@ -442,6 +443,19 @@ class Level(engine.State):
                     self.add_plant()
             elif mouse_pos is None:
                 self.setup_hint_image()
+
+        # --- SHOVEL TOOL ---
+        if hasattr(self, 'shovel') and mouse_pos:
+            shovel_consumed = self.shovel.handle_click(mouse_pos, mouse_click)
+            if not shovel_consumed and mouse_click and mouse_click[0]:
+                if self.shovel.active and not self.drag_plant:
+                    self.shovel.try_remove_plant(
+                        mouse_pos, self.plant_groups,
+                        self.map, self.kill_plant, self.bar_type
+                    )
+            # Cancel shovel if player starts dragging a plant
+            if self.drag_plant and self.shovel.active:
+                self.shovel.deactivate()
 
         if self.produce_sun:
             if (self.current_time - self.sun_timer) > c.PRODUCE_SUN_INTERVAL:
@@ -884,6 +898,9 @@ class Level(engine.State):
 
             if self.drag_plant:
                 self.draw_mouse_show(surface)
+
+            if hasattr(self, 'shovel') and not is_paused:
+                self.shovel.draw(surface)
 
             if hasattr(self, 'menu_button') and not is_paused:
                 self.menu_button.draw(surface)

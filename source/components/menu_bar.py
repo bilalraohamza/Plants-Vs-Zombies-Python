@@ -438,3 +438,111 @@ class MoveBar():
         for card in self.card_list:
             card.draw(surface)
 
+
+# ============================================================
+# SHOVEL TOOL
+# ============================================================
+
+class ShovelTool:
+    """
+    Displays a ShovelBank on the menu bar.
+    Click the bank/shovel to toggle shovel mode on/off.
+    When active the shovel PNG follows the cursor.
+    Clicking a plant while active removes it (no sun refund).
+    Right-click always cancels.
+    """
+
+    # Position: just to the right of the MenuBar (x=510, bar height=86)
+    BANK_X   = 512
+    BANK_Y   = 4
+    BANK_W   = 72
+    BANK_H   = 78
+
+    # Shovel cursor size when dragging
+    SHOVEL_W = 52
+    SHOVEL_H = 52
+
+    def __init__(self):
+        self.active = False   # True = shovel mode on
+
+        # --- Shovel bank background ---
+        try:
+            raw_bank = engine.GFX[c.SHOVEL_BANK]
+            self.bank_image = pg.transform.smoothscale(raw_bank, (self.BANK_W, self.BANK_H))
+        except (KeyError, Exception):
+            self.bank_image = pg.Surface((self.BANK_W, self.BANK_H))
+            self.bank_image.fill((100, 70, 30))
+
+        self.bank_rect = self.bank_image.get_rect(topleft=(self.BANK_X, self.BANK_Y))
+
+        # --- Shovel cursor image ---
+        try:
+            raw_shovel = engine.GFX[c.SHOVEL]
+            self.shovel_image = pg.transform.smoothscale(raw_shovel,
+                                    (self.SHOVEL_W, self.SHOVEL_H))
+        except (KeyError, Exception):
+            self.shovel_image = pg.Surface((self.SHOVEL_W, self.SHOVEL_H))
+            self.shovel_image.fill((180, 100, 30))
+
+        # Shovel resting inside bank (centred)
+        self.shovel_rest_rect = self.shovel_image.get_rect(center=self.bank_rect.center)
+
+    # ----------------------------------------------------------------
+    def handle_click(self, mouse_pos, mouse_click):
+        """
+        Call every frame from Level.play() BEFORE plant-drag logic.
+        Returns True if the click was consumed by the shovel UI.
+        """
+        if mouse_click and mouse_click[1]:      # right-click always cancels
+            if self.active:
+                self.deactivate()
+            return False                         # don't consume right-click
+
+        if mouse_click and mouse_click[0]:
+            if self.bank_rect.collidepoint(mouse_pos):
+                # Toggle
+                if self.active:
+                    self.deactivate()
+                else:
+                    self.activate()
+                return True                      # consumed
+        return False
+
+    def activate(self):
+        self.active = True
+        pg.mouse.set_visible(False)
+
+    def deactivate(self):
+        self.active = False
+        pg.mouse.set_visible(True)
+
+    def try_remove_plant(self, mouse_pos, plant_groups, map_obj,
+                         kill_plant_fn, bar_type):
+        """
+        Call when shovel is active and left-click happens outside the bank.
+        Checks every plant group for a click collision and removes the first hit.
+        Returns True if a plant was removed.
+        """
+        if not self.active or mouse_pos is None:
+            return False
+
+        for group in plant_groups:
+            for p in group:
+                if p.rect.collidepoint(mouse_pos):
+                    kill_plant_fn(p)
+                    self.deactivate()
+                    return True
+        return False
+
+    def draw(self, surface):
+        """Draw the bank. If active draw shovel following cursor, else resting in bank."""
+        surface.blit(self.bank_image, self.bank_rect)
+
+        if self.active:
+            # Shovel follows mouse cursor
+            mx, my = pg.mouse.get_pos()
+            cursor_rect = self.shovel_image.get_rect(center=(mx, my))
+            surface.blit(self.shovel_image, cursor_rect)
+        else:
+            # Shovel rests centred inside the bank
+            surface.blit(self.shovel_image, self.shovel_rest_rect)

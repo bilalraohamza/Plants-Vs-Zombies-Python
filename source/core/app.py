@@ -3,7 +3,7 @@ __author__ = 'Rao Hamza Bilal'
 from . import constants as c
 from . import engine
 from ..states import level, main_menu, pause_menu, screens, user_select
-from ..states import level_select, leaderboard
+from ..states import level_select, leaderboard, settings
 
 def run():
     game = engine.Control()
@@ -17,6 +17,7 @@ def run():
         c.PAUSE_MENU:   pause_menu.PauseMenu(),
         c.LEVEL_SELECT: level_select.LevelSelect(),
         c.LEADERBOARD:  leaderboard.Leaderboard(),
+        c.SETTINGS:     settings.Settings(),
     }
     game.setup_states(state_dict, c.LOAD_SCREEN)
     game.main()
