@@ -1,7 +1,6 @@
 # 🌱🧟 Plants vs. Zombies — Python Edition
 
 > A fully playable Plants vs. Zombies clone built in Python using Pygame.
-> Developed as a Professional Practice project at **Wuhan Institute of Technology**, School of Computer Science and Engineering, 2026.
 
 **Author:** Rao Hamza Bilal &nbsp;|&nbsp; **Language:** Python 3 &nbsp;|&nbsp; **Library:** Pygame &nbsp;|&nbsp; **Screen:** 800 × 600
 
@@ -11,7 +10,7 @@
 
 | Gameplay | Victory | Survival |
 |----------|---------|---------|
-| ![Demo 1](screenshots/demo1.jpg) | ![Demo 2](screenshots/demo2.jpg) | ![Demo 3](screenshots/demo3.jpg) |
+| ![Demo 1](screenshots/demo1.png) | ![Demo 2](screenshots/demo2.png) | ![Demo 3](screenshots/demo3.png) |
 
 ---
 

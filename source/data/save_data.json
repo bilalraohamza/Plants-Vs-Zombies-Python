@@ -2,7 +2,11 @@
     "profiles": [
         {
             "name": "Faah",
-            "level": 1
+            "level": 2,
+            "tutorial_seen": true,
+            "scores": {
+                "1": 1710
+            }
         }
     ]
 }
