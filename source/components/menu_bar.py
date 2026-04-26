@@ -534,15 +534,22 @@ class ShovelTool:
                     return True
         return False
 
-    def draw(self, surface):
-        """Draw the bank. If active draw shovel following cursor, else resting in bank."""
+    def draw_bank(self, surface):
+        """Draw the static bank icon and resting shovel.
+        Call BEFORE sprite groups so zombies render on top."""
         surface.blit(self.bank_image, self.bank_rect)
+        if not self.active:
+            surface.blit(self.shovel_image, self.shovel_rest_rect)
 
+    def draw_cursor(self, surface):
+        """Draw shovel cursor following the mouse when active.
+        Call AFTER sprite groups so cursor stays on top of everything."""
         if self.active:
-            # Shovel follows mouse cursor
             mx, my = pg.mouse.get_pos()
             cursor_rect = self.shovel_image.get_rect(center=(mx, my))
             surface.blit(self.shovel_image, cursor_rect)
-        else:
-            # Shovel rests centred inside the bank
-            surface.blit(self.shovel_image, self.shovel_rest_rect)
+
+    def draw(self, surface):
+        """Legacy single-call draw kept for compatibility."""
+        self.draw_bank(surface)
+        self.draw_cursor(surface)

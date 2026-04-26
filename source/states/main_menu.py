@@ -40,7 +40,7 @@ class Menu(engine.State):
 
         self.buttons = {
             'ADVENTURE':   {'type': 'text', 'font': self.font_medium, 'pos': (400, 310), 'action': 'start_game'},
-            'SURVIVAL':    {'type': 'text', 'font': self.font_medium, 'pos': (400, 380), 'action': 'none'},
+            'SURVIVAL':    {'type': 'text', 'font': self.font_medium, 'pos': (400, 380), 'action': 'survival'},
             'LEADERBOARD': {'type': 'text', 'font': self.font_medium, 'pos': (400, 445), 'action': 'leaderboard'},
             'SETTINGS':    {'type': 'text', 'font': self.font_small,  'pos': (705, 500), 'action': 'settings'},
             'EXIT':        {'type': 'text', 'font': self.font_small,  'pos': (120, 485), 'action': 'exit_game'},
@@ -146,6 +146,9 @@ class Menu(engine.State):
     def trigger_action(self, action):
         if action == 'start_game':
             self.next = c.LEVEL_SELECT
+            self.done = True
+        elif action == 'survival':
+            self.next = c.SURVIVAL
             self.done = True
         elif action == 'leaderboard':
             self.next = c.LEADERBOARD

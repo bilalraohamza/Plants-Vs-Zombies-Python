@@ -95,6 +95,54 @@ def get_user_scores(username):
     return {}
 
 
+def save_survival_score(username, score, time_ms=0):
+    """Save survival score if new personal best. Returns True if it is a new best."""
+    if not username:
+        return False
+    profiles = load_profiles()
+    for p in profiles:
+        if p['name'].lower() == username.lower():
+            current_best = p.get('survival_score', 0)
+            is_best = score > current_best
+            if is_best:
+                p['survival_score'] = score
+                p['survival_time']  = time_ms
+                save_profiles(profiles)
+            return is_best
+    return False
+
+
+def check_survival_beaten_users(username, score):
+    """Return list of other users whose best survival score was beaten."""
+    if not username or score <= 0:
+        return []
+    profiles = load_profiles()
+    beaten = []
+    for p in profiles:
+        if p['name'].lower() == username.lower():
+            continue
+        other = p.get('survival_score', 0)
+        if other > 0 and score > other:
+            beaten.append(p['name'])
+    return beaten
+
+
+def get_survival_leaderboard():
+    """Return sorted list of dicts: name, survival_score, survival_time."""
+    profiles = load_profiles()
+    board = []
+    for p in profiles:
+        s = p.get('survival_score', 0)
+        if s > 0:
+            board.append({
+                'name':           p['name'],
+                'survival_score': s,
+                'survival_time':  p.get('survival_time', 0),
+            })
+    board.sort(key=lambda x: x['survival_score'], reverse=True)
+    return board
+
+
 def get_leaderboard():
     """Return sorted list of dicts: name, total_score, levels_done."""
     profiles = load_profiles()

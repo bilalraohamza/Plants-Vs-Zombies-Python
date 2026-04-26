@@ -879,11 +879,12 @@ class Level(engine.State):
                 self.panel.draw(surface)
 
         elif self.state == c.PLAY:
-            # --- DRAW WAVE TEXT ---
-            if hasattr(self, 'wave_text') and not is_paused:
-                self.wave_text.draw(surface)
             if hasattr(self, 'menubar') and not is_paused:
                 self.menubar.draw(surface)
+
+            # Shovel BANK drawn before sprites so zombies appear on top of it
+            if hasattr(self, 'shovel') and not is_paused:
+                self.shovel.draw_bank(surface)
 
             for i in range(self.map_y_len):
                 self.plant_groups[i].draw(surface)
@@ -899,11 +900,16 @@ class Level(engine.State):
             if self.drag_plant:
                 self.draw_mouse_show(surface)
 
+            # Shovel CURSOR drawn after sprites so it stays on top
             if hasattr(self, 'shovel') and not is_paused:
-                self.shovel.draw(surface)
+                self.shovel.draw_cursor(surface)
 
             if hasattr(self, 'menu_button') and not is_paused:
                 self.menu_button.draw(surface)
+
+            # Wave text drawn LAST so it always renders above everything
+            if hasattr(self, 'wave_text') and not is_paused:
+                self.wave_text.draw(surface)
 
         if is_paused:
             self.pause_menu.draw(surface)

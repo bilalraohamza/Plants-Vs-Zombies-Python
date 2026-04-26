@@ -254,3 +254,14 @@ SAVE_DATA_PATH = os.path.join(DATA_DIR, 'save_data.json')
 # SHOVEL TOOL
 SHOVEL      = 'Shovel'
 SHOVEL_BANK = 'ShovelBank'
+
+# SURVIVAL MODE STATES
+SURVIVAL            = 'survival'
+SURVIVAL_GAME_OVER  = 'survival_game_over'
+SURVIVAL_LEADERBOARD = 'survival_leaderboard'
+
+# SURVIVAL PERSIST KEYS
+SURVIVAL_SCORE          = 'survival_score'
+SURVIVAL_TIME           = 'survival_time'
+SURVIVAL_SCORE_IS_BEST  = 'survival_score_is_best'
+SURVIVAL_BEATEN_USERS   = 'survival_beaten_users'
