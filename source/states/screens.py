@@ -136,7 +136,20 @@ class GameVictoryScreen(Screen):
         self._build_buttons()
 
     def _build_buttons(self):
-        n       = len(self._BTN_DEFS)
+        # On the final level LEVEL_NUM was already incremented past MAX_LEVEL.
+        # Swap "Next Level" for "Level Select" so we don't try to load a
+        # non-existent level file.
+        completed = self.persist.get(c.LEVEL_NUM, 1) - 1
+        if completed >= c.MAX_LEVEL:
+            self._active_btn_defs = [
+                ("Exit",         "exit",         (130, 35,  35), (175, 55,  55), (255, 255, 255)),
+                ("Level Select", c.LEVEL_SELECT, ( 40, 60,  130), ( 60, 90, 180), (255, 255, 255)),
+                ("Main Menu",    c.MAIN_MENU,    ( 90, 60,   15), (130, 90,  25), (255, 220, 100)),
+            ]
+        else:
+            self._active_btn_defs = list(self._BTN_DEFS)
+
+        n       = len(self._active_btn_defs)
         total_w = n * self._BTN_W + (n - 1) * self._BTN_GAP
         board_center = c.GAME_VICTORY_X + c.GAME_VICTORY_WIDTH // 2
         start_x = board_center - total_w // 2
@@ -163,7 +176,7 @@ class GameVictoryScreen(Screen):
                 break
 
         if mouse_click and mouse_click[0] and self._hover >= 0:
-            _, action, *_ = self._BTN_DEFS[self._hover]
+            _, action, *_ = self._active_btn_defs[self._hover]
             if action == "exit":
                 import sys; pg.quit(); sys.exit()
             else:
@@ -192,7 +205,7 @@ class GameVictoryScreen(Screen):
 
     def _draw_buttons(self, surface):
         for i, (rect, (label, _, bg_n, bg_h, txt)) in enumerate(
-                zip(self._buttons, self._BTN_DEFS)):
+                zip(self._buttons, self._active_btn_defs)):
             bg = bg_h if i == self._hover else bg_n
             pg.draw.rect(surface, bg,               rect, border_radius=7)
             pg.draw.rect(surface, self._BTN_BORDER,  rect, 2, border_radius=7)
@@ -294,7 +307,7 @@ class GameLoseScreen(Screen):
                 break
 
         if mouse_click and mouse_click[0] and self._hover >= 0:
-            _, action, *_ = self._BTN_DEFS[self._hover]
+            _, action, *_ = self._active_btn_defs[self._hover]
             if action == "exit":
                 import sys; pg.quit(); sys.exit()
             else:

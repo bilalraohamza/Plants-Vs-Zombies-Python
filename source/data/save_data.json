@@ -1,11 +1,8 @@
 {
     "profiles": [
         {
-            "name": "Rao",
-            "level": 1,
-            "tutorial_seen": true,
-            "survival_score": 37660,
-            "survival_time": 488254
+            "name": "Faah",
+            "level": 1
         }
     ]
 }

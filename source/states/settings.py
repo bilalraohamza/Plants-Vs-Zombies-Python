@@ -188,6 +188,8 @@ class Settings(engine.State):
             for p in profiles:
                 if p['name'].lower() == self.current_user.lower():
                     p['scores'] = {}
+                    p.pop('survival_score', None)   # also clear survival best
+                    p.pop('survival_time',  None)
                     break
             save_profiles(profiles)
             self._feedback = 'All your scores have been deleted.'

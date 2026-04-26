@@ -151,6 +151,7 @@ class Menu(engine.State):
             self.next = c.SURVIVAL
             self.done = True
         elif action == 'leaderboard':
+            self.persist[c.LEADERBOARD_ORIGIN] = c.MAIN_MENU
             self.next = c.LEADERBOARD
             self.done = True
         elif action == 'settings':

@@ -38,7 +38,9 @@ class Leaderboard(engine.State):
         self.start_time = current_time
         self.persist    = persist
         self.game_info  = persist
-        self.next       = c.LEVEL_SELECT
+        origin          = persist.get(c.LEADERBOARD_ORIGIN, c.LEVEL_SELECT)
+        self.next       = origin
+        self._origin    = origin
         self._hover_btn = False
         self._current_user = persist.get(c.CURRENT_USER, '').lower()
 
@@ -84,7 +86,7 @@ class Leaderboard(engine.State):
         self._hover_btn = self._btn.collidepoint(real_pos)
 
         if mouse_click and mouse_click[0] and self._hover_btn:
-            self.next = c.LEVEL_SELECT
+            self.next = self._origin
             self.done = True
             return
 
@@ -169,8 +171,9 @@ class Leaderboard(engine.State):
         bg  = (50, 95, 185) if self._hover_btn else (30, 60, 130)
         pg.draw.rect(surface, bg,          self._btn, border_radius=7)
         pg.draw.rect(surface, _BTN_BORDER, self._btn, 2, border_radius=7)
-        lbl  = self.fnt_btn.render("Level Select", True, (255, 255, 255))
-        shad = self.fnt_btn.render("Level Select", True, (0, 0, 0))
+        back_label = "Main Menu" if self._origin == c.MAIN_MENU else "Level Select"
+        lbl  = self.fnt_btn.render(back_label, True, (255, 255, 255))
+        shad = self.fnt_btn.render(back_label, True, (0, 0, 0))
         lx = self._btn.centerx - lbl.get_width()  // 2
         ly = self._btn.centery - lbl.get_height() // 2
         surface.blit(shad, (lx + 1, ly + 1))

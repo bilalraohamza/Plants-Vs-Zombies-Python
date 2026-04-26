@@ -270,25 +270,6 @@ class Level(engine.State):
     def update(self, surface, current_time, mouse_pos, mouse_click):
         self.current_time = self.game_info[c.CURRENT_TIME] = current_time
 
-        keys = pg.key.get_pressed()
-        if keys[pg.K_n]:
-            self.game_info[c.LEVEL_NUM] += 1
-            self.persist[c.ZOMBIES_KILLED] = 7
-            self.persist[c.SUN_COLLECTED]  = 350
-            self.persist[c.PLANTS_PLANTED] = 5
-            self.next = c.GAME_VICTORY
-            self.done = True
-            self.draw(surface)                                    # ADD THIS
-            self.persist[c.VICTORY_BACKGROUND] = surface.copy()  # ADD THIS
-            return
-
-        if keys[pg.K_l]:
-            self.next = c.GAME_LOSE
-            self.done = True
-            self.draw(surface)                                # ADD THIS
-            self.persist[c.LOSE_BACKGROUND] = surface.copy() # ADD THIS
-            return
-        
 
         if hasattr(self, 'pause_menu') and self.pause_menu.is_active:
             action = self.pause_menu.update(mouse_pos, mouse_click)
@@ -331,7 +312,6 @@ class Level(engine.State):
             self.persist[c.LOSE_BACKGROUND] = surface.copy()
 
     def init_bowling_map(self):
-        print('init_bowling_map')
         for x in range(3, self.map.width):
             for y in range(self.map.height):
                 self.map.set_map_grid_type(x, y, c.MAP_EXIST)
@@ -669,6 +649,7 @@ class Level(engine.State):
 
     def check_car_collisions(self):
         collided_func = pg.sprite.collide_circle_ratio(0.8)
+        dead_cars = []
         for car in self.cars:
             zombies = pg.sprite.spritecollide(car, self.zombie_groups[car.map_y], False, collided_func)
             for zombie in zombies:
@@ -678,7 +659,9 @@ class Level(engine.State):
                     # --- TRACK ZOMBIE KILLS (car) ---
                     self.zombies_killed += 1
             if car.dead:
-                self.cars.remove(car)
+                dead_cars.append(car)
+        for car in dead_cars:
+            self.cars.remove(car)
 
     def boom_zombies(self, x, map_y, y_range, x_range):
         for i in range(self.map_y_len):

@@ -147,6 +147,7 @@ class LevelSelect(engine.State):
                 self.done = True
                 return
             if self._hover_btn == 1:
+                self.persist[c.LEADERBOARD_ORIGIN] = c.LEVEL_SELECT
                 self.next = c.LEADERBOARD
                 self.done = True
                 return

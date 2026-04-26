@@ -255,6 +255,9 @@ SAVE_DATA_PATH = os.path.join(DATA_DIR, 'save_data.json')
 SHOVEL      = 'Shovel'
 SHOVEL_BANK = 'ShovelBank'
 
+# LEADERBOARD ROUTING
+LEADERBOARD_ORIGIN = 'leaderboard_origin'
+
 # SURVIVAL MODE STATES
 SURVIVAL            = 'survival'
 SURVIVAL_GAME_OVER  = 'survival_game_over'

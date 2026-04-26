@@ -47,8 +47,9 @@ def update_profile_level(name, level):
     profiles = load_profiles()
     for p in profiles:
         if p['name'].lower() == name.lower():
-            if level > p['level']:
-                p['level'] = level
+            capped = min(level, c.MAX_LEVEL)   # never exceed the last level
+            if capped > p['level']:
+                p['level'] = capped
             save_profiles(profiles)
             return
 
