@@ -1,4 +1,4 @@
-# 🌱🧟 Plants vs. Zombies — Python Edition
+# Plants vs. Zombies — Python Edition 🌱🧟
 
 > A fully playable Plants vs. Zombies clone built in Python using Pygame.
 
